@@ -36,6 +36,7 @@ public Conexion() {
 }
 
 	public String ConsultarNombre(int Id)
+
 	{
 		conn=Conexion();
 		Statement st;
@@ -58,4 +59,24 @@ public Conexion() {
 		
 		return Nombre;
 	}
+
+    public void InsertarKeepAlive(int Id,String dato){
+	
+	conn=Conexion();
+	
+		PreparedStatement pst;
+		try {
+			pst = conn.prepareStatement("INSERT INTO datos (temp_dat) VALUES (?)");
+		
+			pst.setInt(1,Id);
+			
+			pst.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+}
+
+
 }
