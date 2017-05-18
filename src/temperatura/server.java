@@ -17,6 +17,7 @@ public class server {
 	conectar=new Conexion();
 	System.out.println("Sensor : "+conectar.ConsultarNombre(1));
 	System.out.println("Sensor : "+conectar.ConsultarNombre(2));
+	conectar.InsertarDato(1,"23.00","78.00" );
 	
 }
 		

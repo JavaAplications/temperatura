@@ -10,14 +10,14 @@ public class Conexion {
     static String url="jdbc:mysql://localhost/"+_bd;
 	private Connection conn;
 
-public Conexion() {
+     public Conexion() {
 		
 	}
 
 	
-	public Connection Conexion( ){
+	public Connection Conexion(){
 	
-
+		String url="jdbc:mysql://localhost/"+_bd;
 	try {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn= DriverManager.getConnection(url,_usuario,_pwd);
@@ -60,17 +60,19 @@ public Conexion() {
 		return Nombre;
 	}
 
-    public void InsertarKeepAlive(int Id,String dato){
+    public void InsertarDato(int Id,String temp,String hum){
 	
 	conn=Conexion();
 	
 		PreparedStatement pst;
 		try {
-			pst = conn.prepareStatement("INSERT INTO datos (temp_dat) VALUES (?)");
+			pst = conn.prepareStatement("INSERT INTO dataloguer (id_sen,temp_dat,hum_dat) VALUES (?,?,?)");
 		
 			pst.setInt(1,Id);
-			
+			pst.setString(2,temp);
+			pst.setString(3,hum);
 			pst.execute();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
