@@ -8,21 +8,26 @@ public class Conexion {
     private String _pwd="";
     private static String _bd="bd_temperatura";
     static String url="jdbc:mysql://localhost/"+_bd;
-	private Connection conn;
+	private Connection conn=null;
 
-     public Conexion() {
-		
-	}
+	  public Conexion() {
+			
+	     
+		}
 
 	
 	public Connection Conexion(){
-	
+		
 		String url="jdbc:mysql://localhost/"+_bd;
+	
 	try {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn= DriverManager.getConnection(url,_usuario,_pwd);
 		if(conn!=null){
-			System.out.println("Conexion a base de datos "+ url +". . . ok");
+	//		System.out.println("Conexion a base de datos "+ url +". . . ok");
+		}
+		if(conn== null){
+			System.out.println("Conexion NULL...");
 		}
 		
 	} catch (SQLException e) {
@@ -44,12 +49,10 @@ public class Conexion {
 		String Nombre = null;
 		try {
 			st=conn.createStatement();
-			rs=st.executeQuery("SELECT `nom_sen` FROM `sensores` WHERE `Id_sen`='"+Id+"'");
+			rs=st.executeQuery("SELECT `nom_sen` FROM `sensores` WHERE `id_sen`='"+Id+"'");
 			while(rs.next()){
 				Nombre=  rs.getString("nom_sen");				
-			}
-				
-		
+			}		
 		} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -60,15 +63,15 @@ public class Conexion {
 		return Nombre;
 	}
 
-    public void InsertarDato(int Id,String temp,String hum){
+    public void InsertarDato(int id,String temp,String hum){
 	
-	conn=Conexion();
+	    conn=Conexion();
 	
 		PreparedStatement pst;
 		try {
 			pst = conn.prepareStatement("INSERT INTO dataloguer (id_sen,temp_dat,hum_dat) VALUES (?,?,?)");
 		
-			pst.setInt(1,Id);
+			pst.setInt(1,id);
 			pst.setString(2,temp);
 			pst.setString(3,hum);
 			pst.execute();

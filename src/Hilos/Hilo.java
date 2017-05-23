@@ -1,4 +1,4 @@
-package temperatura;
+package Hilos;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,10 +8,12 @@ import BBDD.Conexion;
 
 public class Hilo extends Thread{
 	private Conexion conectar;
-	boolean go=false;
+	boolean go=true;
 	int c=0;
 	public Hilo() {
 		// TODO Auto-generated constructor stub
+		System.out.println("Comienza Proceso");
+		c=0;
 	}
 
 	@Override
@@ -22,7 +24,7 @@ public class Hilo extends Thread{
 		try {
 			sleep(1000);
 			c++;
-			System.out.println("hola");
+			System.out.println("Pasos: "+c);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
