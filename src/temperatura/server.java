@@ -9,7 +9,6 @@ public class server {
 	static Hilo hilito;
     static Serial com;
 	public static void main(String[] args) {
-	
  
 		com=new Serial();
 		com.run();
