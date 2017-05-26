@@ -3,6 +3,7 @@ package Hilos;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,9 +14,10 @@ import com.fazecast.jSerialComm.SerialPort;
 public class Serial extends Thread {
 	Conexion conectar;
 	SerialPort comPort;
-	
+	Hilo hilito;
+	runables hilo_run;
 	String dato;
-	boolean control=true;
+	static boolean control=true;
 	
 	
 	StringBuffer txt = new StringBuffer(); 
@@ -37,91 +39,100 @@ public class Serial extends Thread {
 		comPort.setComPortTimeouts(SerialPort.LISTENING_EVENT_DATA_AVAILABLE, 100, 0);
 		InputStream in = comPort.getInputStream();
 		OutputStream out = comPort.getOutputStream();
-		String content = "t\r";
-		byte[] bytes = content.getBytes();
+		int CantidadSensores=conectar.ConsultarCantidadSensores();
+		String content;
+		byte[] bytes ; 
 
 		while(true){
-			
-			 try {
-				sleep(5000);
-				 out.write(bytes);
+			control=true;
+			for(int i=1;i<=CantidadSensores;i++){
+				 
+				hilito=new Hilo(conectar.ConsultarNombre(i));
+				hilito.start();
+				System.out.println("SENSOR DE: "+conectar.ConsultarNombre(i));
+				content=i+"\r";
+				bytes=content.getBytes();
+				 try {
+					out.write(bytes);
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+					
+				while(control){
+					 try {
+					   	  char_dat=(char)in.read();
+					   	  txt.append(char_dat);
+						} catch (IOException e) {
+								e.printStackTrace();}
+					      
+					      if(char_dat=='\n'){
+					    	  dato=txt.toString();
+					    	  ProcesarMensaje();
+					    	  txt.delete(0, txt.length());
+					    //	  Hilo.controlHilo=true;
+					    	  break;
+					      }
+				   }
+					control=true;
+					
+					// tiempo de epera entre mediciones
+				try {
+							sleep(4000);
+						
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 
+					    
 				
-				 System.out.println("Comando Temperatura");
-				
- 
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+					
+					
 			}
-			
-			
-			while(true){
-				
-		      try {
-		    	 
-		    	  char_dat=(char)in.read();
-		    	  txt.append(char_dat);
-				} catch (IOException e) {
-					e.printStackTrace();}
-		      
-		      if(char_dat=='\n'){
-		    	  dato=txt.toString();
-		    	  ProcesarMensaje();
-		    	  txt.delete(0, txt.length());
-		    	  break;
-		      }
-			}
-		
-	   }
+		}
 	}
 
 	public void ProcesarMensaje(){//expresion regular para controlar caracteres ingresados.
 		 String[] parts ;
-		 int numParts=8;
-		 String id ; 
+		 int numParts=3;
+		 String id = null ; 
+		 int id_f = 0;
 		 String temp ; 
 		 String hum ; 
-		 String t="0",h="0";
-		
-		Pattern pat = Pattern.compile("[a-z1-9]\\s");
+		 
+		float t_f = 0,h_f = 0;
+		Pattern pat = Pattern.compile("[1-9]:;");
 		Matcher mat = pat.matcher(dato);
 		
 		 boolean valido=mat.find();
-	 if (valido) {//comprueba caracteres validos
-		 parts = dato.split(" ");// separa por espacio debe ser ;
+	 if (true) {//comprueba caracteres validos
+		 parts = dato.split(";");// separa por espacio debe ser ;
+	//	 System.out.println("Numero de partes"+parts.length);
 		 if(parts.length==numParts){// comprueba numero de datos separados
 			 id = parts[0]; 
 			 temp = parts[1]; 
 			 hum = parts[2]; 
-			 t=temp.substring(5,10);
-		   	 h=hum.substring(4,9);
+			// System.out.println("id:"+id+"  temp:"+temp+"  hum:"+hum);
+			 id_f=Integer.valueOf(id);
+			 t_f=Float.parseFloat(temp);
+		   	 h_f=Float.parseFloat(hum);
+		   	 //System.out.println("id_f:"+id_f+"  t_f:"+t_f+"  h_f:"+h_f);
+		   	 valido=true;
 		 }
 		
 	   	 }
 	 else {
-	   	  t="0";
-	   	  h="0";
+	   	  id_f=0;
+	   	  t_f=0;
+	   	  h_f=0;
+	   	 valido=false;
 	     }
-	  System.out.println("\t Id:"+1+"\t T:"+t+"\t H:"+h+"\t valido:"+valido);
-	  conectar.InsertarDato(1, t, h,valido);
-   	  
-   	  
-   	  
-	}
+	  System.out.println("\t Id:"+id+"\t T:"+t_f+"\t H:"+h_f+"\t valido:"+valido);
+	  
+	  conectar.InsertarDato(id_f,t_f,h_f,valido);
+	 
+  	}
 	
 	
-	public int[] ConsultarSensores(){
-		 
-		
-		int[] listSens; 
-		return null;
-		
-		
-		
-		
-	}
 		
 }

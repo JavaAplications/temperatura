@@ -7,51 +7,45 @@ import java.sql.SQLException;
 import BBDD.Conexion;
 
 public class Hilo extends Thread{
-	private Conexion conectar;
-	boolean go=true;
+	
 	int c=0;
-	public Hilo() {
-		// TODO Auto-generated constructor stub
-		System.out.println("Comienza Proceso");
-		c=0;
+	boolean control=true;
+	static boolean controlHilo=false;
+	private String nombre;
+	public Hilo(String nombre) {
+		this.nombre=nombre;
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-	while(go){
 		
+	while(true){
 		try {
 			sleep(1000);
 			c++;
-			System.out.println("Pasos: "+c);
+			System.out.println(nombre+": "+c+" seg.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(c>4){
+	/*	if(controlHilo){
+			System.out.println(nombre+": Mensaje recibido");
+			  controlHilo=false;
+			break;
+		}*/
+		if(c>2){
+			System.out.println("Termino proceso");
+			Serial.control=false;
 			
-			destroy();
-			
-		}
+			break;
+			}
 		
 	}
 		
 	}
 
-	@Override
-	public  void start() {
-		// TODO Auto-generated method stub
-		go=true;
-		System.out.println("Comienza Proceso");
-	}
-
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		go=false;
-		System.out.println("Proceso Terminado");
-	}
+	
 	
 	
 	
