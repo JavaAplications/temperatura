@@ -3,38 +3,42 @@ package Hilos;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Calendar;
+import java.util.regex.*;
+
 
 import BBDD.Conexion;
 
 import com.fazecast.jSerialComm.SerialPort;
 
 public class Serial extends Thread {
+	Calendar calendario = Calendar.getInstance();
+	int hora, minutos, segundos,dia,mes,ano;
 	Conexion conectar;
 	SerialPort comPort;
 	Hilo hilito;
-	runables hilo_run;
+	int tiempoPooling=60;//seg
 	String dato;
 	static boolean control=true;
 	
 	
 	StringBuffer txt = new StringBuffer(); 
 
-	public Serial(){
+	public Serial(int Seg){
 				conectar=new Conexion();
+				this.tiempoPooling=Seg;
 	}
 
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		super.run();
 		
 		char char_dat = 0;
 		StringBuffer txt = new StringBuffer(); 
-		SerialPort comPort = SerialPort.getCommPorts()[0];
+	  //SerialPort comPort = SerialPort.getCommPorts()[0];//windows
+		SerialPort comPort = SerialPort.getCommPort("/dev/ttyS0");//linux
+		
 		comPort.openPort();
 		comPort.setComPortTimeouts(SerialPort.LISTENING_EVENT_DATA_AVAILABLE, 100, 0);
 		InputStream in = comPort.getInputStream();
@@ -49,13 +53,13 @@ public class Serial extends Thread {
 				 
 				hilito=new Hilo(conectar.ConsultarNombre(i));
 				hilito.start();
-				System.out.println("SENSOR DE: "+conectar.ConsultarNombre(i));
+				System.out.println(conectar.ConsultarNombre(i));
 				content=i+"\r";
 				bytes=content.getBytes();
 				 try {
 					out.write(bytes);
 				} catch (IOException e2) {
-					// TODO Auto-generated catch block
+				
 					e2.printStackTrace();
 				}
 					
@@ -70,7 +74,6 @@ public class Serial extends Thread {
 					    	  dato=txt.toString();
 					    	  ProcesarMensaje();
 					    	  txt.delete(0, txt.length());
-					    //	  Hilo.controlHilo=true;
 					    	  break;
 					      }
 				   }
@@ -78,7 +81,7 @@ public class Serial extends Thread {
 					
 					// tiempo de epera entre mediciones
 				try {
-							sleep(4000);
+							sleep(tiempoPooling*1000);
 						
 						} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
@@ -101,13 +104,20 @@ public class Serial extends Thread {
 		 String hum ; 
 		 
 		float t_f = 0,h_f = 0;
-		Pattern pat = Pattern.compile("[1-9]:;");
+		Pattern pat = Pattern.compile("[1-9].;");
 		Matcher mat = pat.matcher(dato);
 		
 		 boolean valido=mat.find();
+		/* if(mat.find()){
+			 System.out.println("true");
+			 
+		 }else{
+			 System.out.println("false");
+		 }*/
+		 
 	 if (true) {//comprueba caracteres validos
 		 parts = dato.split(";");// separa por espacio debe ser ;
-	//	 System.out.println("Numero de partes"+parts.length);
+	
 		 if(parts.length==numParts){// comprueba numero de datos separados
 			 id = parts[0]; 
 			 temp = parts[1]; 
@@ -121,14 +131,21 @@ public class Serial extends Thread {
 		 }
 		
 	   	 }
-	 else {
+	/* else {
 	   	  id_f=0;
 	   	  t_f=0;
 	   	  h_f=0;
 	   	 valido=false;
-	     }
-	  System.out.println("\t Id:"+id+"\t T:"+t_f+"\t H:"+h_f+"\t valido:"+valido);
-	  
+	     }*/
+	 dia =calendario.get(Calendar.DAY_OF_MONTH);
+	 mes =calendario.get(Calendar.MONTH);
+	 ano =calendario.get(Calendar.YEAR);
+	 hora =calendario.get(Calendar.HOUR_OF_DAY);
+	 minutos = calendario.get(Calendar.MINUTE);
+	 segundos = calendario.get(Calendar.SECOND);
+	 System.out.print(dia+"-"+mes+"-"+ano+" "+hora + ":" + minutos + ":" + segundos);
+	  System.out.println(" Id:"+id+"\t T:"+t_f+"\t H:"+h_f+"\t lectura:"+valido);
+	  System.out.println();
 	  conectar.InsertarDato(id_f,t_f,h_f,valido);
 	 
   	}

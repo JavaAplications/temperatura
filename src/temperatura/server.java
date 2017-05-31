@@ -1,23 +1,18 @@
 package temperatura;
 
-import BBDD.Conexion;
-import Hilos.Hilo;
 import Hilos.Serial;
 
 public class server {
-	static Conexion conectar;
-	static Hilo hilito;
-    static Serial com;
-    
+	
+	static Serial com;
+    static int pooling=15;
   
     public static void main(String[] args) {
  
-	
-		com=new Serial();
+    
+		com=new Serial(pooling);
 		com.run();
-	//hilito=new	Hilo();
-//	hilito.run();
-  
+
 }
 
 	

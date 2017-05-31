@@ -24,18 +24,14 @@ public class Hilo extends Thread{
 		try {
 			sleep(1000);
 			c++;
-			System.out.println(nombre+": "+c+" seg.");
+			//System.out.println(nombre+": "+c+" seg.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	/*	if(controlHilo){
-			System.out.println(nombre+": Mensaje recibido");
-			  controlHilo=false;
-			break;
-		}*/
+	
 		if(c>2){
-			System.out.println("Termino proceso");
+	
 			Serial.control=false;
 			
 			break;
