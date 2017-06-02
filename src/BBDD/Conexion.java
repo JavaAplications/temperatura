@@ -1,12 +1,6 @@
 package BBDD;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
-
-import static java.nio.charset.StandardCharsets.*;
 
 public class Conexion {
 	
@@ -20,12 +14,9 @@ public class Conexion {
 
  	private Connection conn=null;
 
-	  public Conexion() {
-				     
-		}
-
 	
-	public Connection Conexion(){
+	
+	public Conexion(){
 	 
 	
 	try {
@@ -33,8 +24,7 @@ public class Conexion {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn= DriverManager.getConnection(url,_usuario,_pwd);
 		if(conn!=null){
-		//	System.out.println("Conexion a base de datos "+ url +". . . ok");
-		}
+			}
 		if(conn== null){
 			System.out.println("Conexion NULL...");
 		}
@@ -46,13 +36,12 @@ public class Conexion {
 		System.out.print("ClassNotFoundException: ");System.out.println(e);
 		
 	}
-	return conn;
-}
+	}
 
 	public String ConsultarNombre(int Id)
 
 	{
-		conn=Conexion();
+	
 		Statement st;
 		ResultSet rs=null;
 		String Nombre = null;
@@ -62,7 +51,7 @@ public class Conexion {
 			while(rs.next()){
 				Nombre=  rs.getString("nom_sen");				
 			}	
-			conn.close();
+		
 		} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -75,7 +64,7 @@ public class Conexion {
 
     public void InsertarDato(int id,float temp,float hum,boolean valido){
 	
-	    conn=Conexion();
+	 
 	   
 		PreparedStatement pst;
 		try {
@@ -86,7 +75,7 @@ public class Conexion {
 			pst.setFloat(3,hum);
 			pst.setBoolean(4,valido);
 			pst.execute();
-			conn.close();
+		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -98,24 +87,23 @@ public class Conexion {
     public int ConsultarCantidadSensores()
 
 	{
-		conn=Conexion();
+	
 		Statement st;
 		ResultSet rs=null;
 		int count = 0;
 		try {
 			st=conn.createStatement();
-			rs = st.executeQuery("SELECT 1+1 as a");
-			//rs=st.executeQuery("SELECT COUNT(*) FROM `sensores`");
+			rs=st.executeQuery("SELECT COUNT(*) FROM `sensores`");
 			  
 			 while(rs.next()){
-				count = rs.getInt("a");
-				 //count = rs.getInt("count(*)");
+				count = rs.getInt("COUNT(*)");
+			
 			    }
-			 conn.close();
+		
 		} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				//count =0;
+			
 				 
 		}
 		
@@ -125,7 +113,7 @@ public class Conexion {
     public String[] ConsultarListadoSensores()
 
 	{
-		conn=Conexion();
+	
 		Statement st;
 		ResultSet rs=null;
 		int largo=ConsultarCantidadSensores();
@@ -141,7 +129,7 @@ public class Conexion {
 				 count++;
 			    }
 			 rs=st.executeQuery("SELECT `nom_sen` FROM `sensores`");
-			 conn.close();
+		
 		} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
