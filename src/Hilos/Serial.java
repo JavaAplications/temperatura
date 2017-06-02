@@ -12,8 +12,7 @@ import BBDD.Conexion;
 import com.fazecast.jSerialComm.SerialPort;
 
 public class Serial extends Thread {
-	Calendar calendario = Calendar.getInstance();
-	int hora, minutos, segundos,dia,mes,ano;
+	
 	Conexion conectar;
 	SerialPort comPort;
 	Hilo hilito;
@@ -102,7 +101,8 @@ public class Serial extends Thread {
 		 int id_f = 0;
 		 String temp ; 
 		 String hum ; 
-		 
+		 Calendar calendario = Calendar.getInstance();
+			int hora = 0, minutos = 0, segundos = 0,dia = 0,mes = 0,ano = 0;
 		float t_f = 0,h_f = 0;
 		Pattern pat = Pattern.compile("[1-9].;");
 		Matcher mat = pat.matcher(dato);
@@ -122,31 +122,26 @@ public class Serial extends Thread {
 			 id = parts[0]; 
 			 temp = parts[1]; 
 			 hum = parts[2]; 
-			// System.out.println("id:"+id+"  temp:"+temp+"  hum:"+hum);
+			
 			 id_f=Integer.valueOf(id);
 			 t_f=Float.parseFloat(temp);
 		   	 h_f=Float.parseFloat(hum);
-		   	 //System.out.println("id_f:"+id_f+"  t_f:"+t_f+"  h_f:"+h_f);
+		   	 dia =calendario.get(Calendar.DAY_OF_MONTH);
+			 mes =calendario.get(Calendar.MONTH);
+			 ano =calendario.get(Calendar.YEAR);
+			 hora =calendario.get(Calendar.HOUR_OF_DAY);
+			 minutos = calendario.get(Calendar.MINUTE);
+			 segundos = calendario.get(Calendar.SECOND);
+		
 		   	 valido=true;
 		 }
 		
 	   	 }
-	/* else {
-	   	  id_f=0;
-	   	  t_f=0;
-	   	  h_f=0;
-	   	 valido=false;
-	     }*/
-	 dia =calendario.get(Calendar.DAY_OF_MONTH);
-	 mes =calendario.get(Calendar.MONTH);
-	 ano =calendario.get(Calendar.YEAR);
-	 hora =calendario.get(Calendar.HOUR_OF_DAY);
-	 minutos = calendario.get(Calendar.MINUTE);
-	 segundos = calendario.get(Calendar.SECOND);
+
+	
 	 System.out.print(dia+"-"+mes+"-"+ano+" "+hora + ":" + minutos + ":" + segundos);
-	  System.out.println(" Id:"+id+"\t T:"+t_f+"\t H:"+h_f+"\t lectura:"+valido);
-	  System.out.println();
-	  conectar.InsertarDato(id_f,t_f,h_f,valido);
+	 System.out.println(" Id:"+id+"\t T:"+t_f+"\t H:"+h_f+"\t lectura:"+valido);
+	 conectar.InsertarDato(id_f,t_f,h_f,valido);
 	 
   	}
 	
