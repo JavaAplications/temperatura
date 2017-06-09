@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.regex.*;
 
-
 import BBDD.Conexion;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -19,13 +18,27 @@ public class Serial extends Thread {
 	int tiempoPooling=60;//seg
 	String dato;
 	static boolean control=true;
-	
-	
+	private String os;
+	InputStream in;
+	OutputStream out;
 	StringBuffer txt = new StringBuffer(); 
 
-	public Serial(int Seg){
-				conectar=new Conexion();
-				this.tiempoPooling=Seg;
+	
+
+
+	public Serial(int pooling, String sistemaOP) {
+		
+		conectar=new Conexion();
+		this.tiempoPooling=pooling;
+		this.os=sistemaOP;
+		if(os.equals("w")){
+			comPort = SerialPort.getCommPorts()[0];//windows
+			System.out.println("Accediendo al puerto serial com[0] ...");
+		}else{
+			comPort = SerialPort.getCommPort("/dev/ttyS0");//linux
+			System.out.println("Accediendo al puerto serial /dev/ttyS0 ...");
+			
+		}
 	}
 
 
@@ -35,13 +48,21 @@ public class Serial extends Thread {
 		
 		char char_dat = 0;
 		StringBuffer txt = new StringBuffer(); 
-	  //SerialPort comPort = SerialPort.getCommPorts()[0];//windows
-		SerialPort comPort = SerialPort.getCommPort("/dev/ttyS0");//linux
+	try {
+			comPort.openPort();
+			comPort.setComPortTimeouts(SerialPort.LISTENING_EVENT_DATA_AVAILABLE, 100, 0);
+
+			 in = comPort.getInputStream();
+			 out = comPort.getOutputStream();
+		} catch (Exception e) {
+			System.out.println();
+			System.out.println("Error serial: "+e);
+			System.out.println();
+			
+		}
+	
 		
-		comPort.openPort();
-		comPort.setComPortTimeouts(SerialPort.LISTENING_EVENT_DATA_AVAILABLE, 100, 0);
-		InputStream in = comPort.getInputStream();
-		OutputStream out = comPort.getOutputStream();
+		
 		int CantidadSensores=conectar.ConsultarCantidadSensores();
 		String content;
 		byte[] bytes ; 

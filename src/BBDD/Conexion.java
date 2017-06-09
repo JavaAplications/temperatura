@@ -7,10 +7,10 @@ public class Conexion {
 	
 	
 	 private static String _bd="bd_temperatura";
-//	static String url="jdbc:mysql://192.168.205.222/"+_bd;
+	static String url="jdbc:mysql://192.168.205.222/"+_bd;
 	 private String _usuario="diego",_pwd="diego";
    // private String _usuario="root",_pwd="";
-    static String url="jdbc:mysql://localhost/"+_bd;
+//    static String url="jdbc:mysql://localhost/"+_bd;
 
  	private Connection conn=null;
 
