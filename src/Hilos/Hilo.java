@@ -12,6 +12,7 @@ public class Hilo extends Thread{
 	boolean control=true;
 	static boolean controlHilo=false;
 	private String nombre;
+	
 	public Hilo(String nombre) {
 		this.nombre=nombre;
 	}
@@ -22,18 +23,21 @@ public class Hilo extends Thread{
 		
 	while(true){
 		try {
+			System.out.println(nombre+" "+c+"Seg");
 			sleep(1000);
 			c++;
+			
 			//System.out.println(nombre+": "+c+" seg.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-	
-		if(c>2){
+		
+		if(c>3){
 	
 			Serial.control=false;
-			
+		
 			break;
 			}
 		

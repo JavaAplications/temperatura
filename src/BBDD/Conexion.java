@@ -6,11 +6,11 @@ public class Conexion {
 	
 	
 	
-	 private static String _bd="bd_temperatura";
-	static String url="jdbc:mysql://192.168.205.222/"+_bd;
-	 private String _usuario="diego",_pwd="diego";
-   // private String _usuario="root",_pwd="";
-//    static String url="jdbc:mysql://localhost/"+_bd;
+//	 private static String _bd="bd_temperatura";
+//	static String url="jdbc:mysql://192.168.205.222/"+_bd;
+//	 private String _usuario="diego",_pwd="diego";
+   private String _usuario="root",_pwd="24305314";
+    static String url="jdbc:mysql://localhost/"+"bd_sensores";
 
  	private Connection conn=null;
 
@@ -47,9 +47,9 @@ public class Conexion {
 		String Nombre = null;
 		try {
 			st=conn.createStatement();
-			rs=st.executeQuery("SELECT `nom_sen` FROM `sensores` WHERE `id_sen`='"+Id+"'");
+			rs=st.executeQuery("SELECT `Nom_sensores` FROM `sensores` WHERE `Id_sensores`='"+Id+"'");
 			while(rs.next()){
-				Nombre=  rs.getString("nom_sen");				
+				Nombre=  rs.getString("Nom_sensores");				
 			}	
 		
 		} catch (SQLException e) {
@@ -68,7 +68,7 @@ public class Conexion {
 	   
 		PreparedStatement pst;
 		try {
-			pst = conn.prepareStatement("INSERT INTO dataloguer (id_sen,temp_dat,hum_dat,val_dat) VALUES (?,?,?,?)");
+			pst = conn.prepareStatement("INSERT INTO datos (Id_sensores,Temp_datos,Hum_datos,Val_datos) VALUES (?,?,?,?)");
 		
 			pst.setInt(1,id);
 			pst.setFloat(2,temp);
@@ -121,14 +121,14 @@ public class Conexion {
 		int count = 0;
 		try {
 			st=conn.createStatement();
-			rs=st.executeQuery("SELECT `nom_sen` FROM `sensores`");
+			rs=st.executeQuery("SELECT `Nom_sensores` FROM `sensores`");
 			  
 			 while(rs.next()){
 				 
-				 nombres[count] = rs.getString("nom_sen");
+				 nombres[count] = rs.getString("Nom_sensores");
 				 count++;
 			    }
-			 rs=st.executeQuery("SELECT `nom_sen` FROM `sensores`");
+			 rs=st.executeQuery("SELECT `Nom_sensores` FROM `sensores`");
 		
 		} catch (SQLException e) {
 				// TODO Auto-generated catch block

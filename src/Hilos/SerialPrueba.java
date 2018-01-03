@@ -10,7 +10,7 @@ import BBDD.Conexion;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-public class Serial extends Thread {
+public class SerialPrueba extends Thread {
 	
 	Conexion conectar;
 	SerialPort comPort;
@@ -23,7 +23,7 @@ public class Serial extends Thread {
 	OutputStream out;
 	StringBuffer txt = new StringBuffer(); 
 
-	public Serial(int pooling, String sistemaOP) {
+	public SerialPrueba(int pooling, String sistemaOP) {
 		
 		conectar=new Conexion();
 		this.tiempoPooling=pooling;
@@ -65,7 +65,8 @@ public class Serial extends Thread {
 				 
 			
 				System.out.println(conectar.ConsultarNombre(i));
-				content=i+"\r\n";
+				//content=i+"\r";
+				content="1\n\r";
 				bytes=content.getBytes();
 				
 				try {				
@@ -88,15 +89,15 @@ public class Serial extends Thread {
 								e.printStackTrace();
 							}
 					      
-					 if((char_dat=='\n')){
+					// if((char_dat=='\n')){
 						 //||(char_dat=='\n')){
 					
 						 dato=txt.toString();
 					     System.out.println("Recibido:'"+dato+"'");
 					 //    ProcesarMensaje();
 					     txt.delete(0, txt.length());
-					    break;
-					      }
+					  //   break;
+					 //     }
 				   }
 				control=true;
 					
