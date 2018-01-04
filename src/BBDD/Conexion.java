@@ -71,11 +71,11 @@ public class Conexion {
 			pst = conn.prepareStatement("INSERT INTO datos (Id_sensores,Temp_datos,Hum_datos,Val_datos) VALUES (?,?,?,?)");
 		
 			pst.setInt(1,id);
-			pst.setFloat(2,temp);
-			pst.setFloat(3,hum);
+			pst.setFloat(2,temp); 
+			pst.setFloat(3,hum); 
 			pst.setBoolean(4,valido);
 			pst.execute();
-		
+			System.out.println("Dato Insertado id:"+id+"temp:"+temp+" hum:"+hum+" valido:"+valido);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

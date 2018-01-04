@@ -56,20 +56,22 @@ public class Serial extends Thread {
 	
 	int CantidadSensores=conectar.ConsultarCantidadSensores();
 	System.out.println("Cantidad Sensores:"+CantidadSensores);
-	String content;
+	String content ;
 	byte[] bytes ; 
 
 	while(true){
 			//control=true;
 			for(int i=1;i<=CantidadSensores;i++){
-				 
+				System.out.println("i:"+i);
 			
 				System.out.println(conectar.ConsultarNombre(i));
-				content=i+"\r\n";
+				content=i+"\r";
 				bytes=content.getBytes();
 				
 				try {				
 					out.write(bytes);
+					bytes=null;
+					System.out.println("enviar:"+content);
 					hilito=new Hilo(conectar.ConsultarNombre(i));
 					hilito.start();
 					
@@ -77,29 +79,32 @@ public class Serial extends Thread {
 				catch (IOException e2) {
 					e2.printStackTrace();
 					}
-					
+				 System.out.println("inicio while control");	
+				control=true;
 				while(control){
-					 System.out.println("inicio while control");
 					 try {
 					   	  char_dat=(char)in.read();
 					   	  txt.append(char_dat);
+					   
 							}
 					 catch (IOException e) {
 								e.printStackTrace();
 							}
 					      
 					 if((char_dat=='\n')){
-						 //||(char_dat=='\n')){
-					
 						 dato=txt.toString();
 					     System.out.println("Recibido:'"+dato+"'");
-					 //    ProcesarMensaje();
+					  //   ProcesarMensaje();
+					     
+					     ProcesoCorto();
 					     txt.delete(0, txt.length());
-					    break;
-					      }
-				   }
-				control=true;
+					      break;
+					 //    control=false;
+					  }
+				
 					
+				   }
+				
 					// tiempo de espera entre mediciones
 				try {sleep(tiempoPooling*1000);
 					}
@@ -122,7 +127,7 @@ public class Serial extends Thread {
 		Calendar calendario = Calendar.getInstance();
 		int hora = 0, minutos = 0, segundos = 0,dia = 0,mes = 0,ano = 0;
 		float t_f = 0,h_f = 0;
-		
+		System.out.println("Procesando el dato:"+dato);
 		Pattern pat = Pattern.compile("\\d\\;\\d{2}\\.\\d{2}\\;\\d{2}\\.\\d{2}\\s");
 	   
 		Matcher mat = pat.matcher(dato);
@@ -178,4 +183,45 @@ public class Serial extends Thread {
 			 
 		 }
 	}		
+	
+	
+    public void ProcesoCorto(){
+		
+		
+		String[] parts ;
+		int numParts=3;
+		String id = null ; 
+		int id_f = 0;
+		String temp ; 
+		String hum ; 
+		Calendar calendario = Calendar.getInstance();
+		int hora = 0, minutos = 0, segundos = 0,dia = 0,mes = 0,ano = 0;
+		float t_f = 0,h_f = 0;
+		System.out.println("Procesando el dato:"+dato);
+	
+	
+		try{	
+			parts = dato.split(";");// separa por espacio debe ser ;
+			System.out.println("numero de partes:"+parts);
+			if(parts.length==numParts){// comprueba numero de datos separados
+				String[] parteUno ;
+				parteUno = parts[0].split("\r");// separa por espacio debe ser ;
+				id = parteUno[1]; 
+				temp = parts[1]; 
+				hum = parts[2]; 
+				System.out.println("Numero de partes ok");
+		
+				id_f=Integer.valueOf(id);
+				t_f=Float.parseFloat(temp);
+				h_f=Float.parseFloat(hum);
+				
+				System.out.println(" Id:"+id+"\t T:"+t_f+"\t H:"+h_f);
+				conectar.InsertarDato(id_f,t_f,h_f,true);
+		    
+			}
+		 	}catch (Exception e) {
+				System.out.println("Error comprueba caracteres validos "+e);
+		 		}
+		}
+
 }

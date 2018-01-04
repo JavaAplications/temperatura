@@ -21,10 +21,11 @@ public class Hilo extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		
-	while(true){
+//	while(true){
 		try {
 			System.out.println(nombre+" "+c+"Seg");
-			sleep(1000);
+			sleep(3000);
+			Serial.control=false;
 			c++;
 			
 			//System.out.println(nombre+": "+c+" seg.");
@@ -34,14 +35,14 @@ public class Hilo extends Thread{
 			e.printStackTrace();
 		}
 		
-		if(c>3){
+/*		if(c>5){
 	
 			Serial.control=false;
 		
 			break;
 			}
-		
-	}
+	*/	
+//	}
 		
 	}
 
