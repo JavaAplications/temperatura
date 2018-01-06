@@ -15,7 +15,7 @@ public class Serial extends Thread {
 	Conexion conectar;
 	SerialPort comPort;
 	Hilo hilito;
-	int tiempoPooling=60;//seg
+	int tiempoPooling;//seg
 	String dato;
 	static boolean control=true;
 	private String os;
@@ -60,58 +60,67 @@ public class Serial extends Thread {
 	byte[] bytes ; 
 
 	while(true){
-			//control=true;
-			for(int i=1;i<=CantidadSensores;i++){
+			
+			for(int i=1;i<CantidadSensores+1;i++){
+				
 				System.out.println("i:"+i);
 			
 				System.out.println(conectar.ConsultarNombre(i));
 				content=i+"\r";
 				bytes=content.getBytes();
 				
-				try {				
+				try {			
+					control=true;
 					out.write(bytes);
 					bytes=null;
 					System.out.println("enviar:"+content);
-					hilito=new Hilo(conectar.ConsultarNombre(i));
-					hilito.start();
+					
 					
 					}
 				catch (IOException e2) {
 					e2.printStackTrace();
 					}
 				 System.out.println("inicio while control");	
-				control=true;
+				 System.out.println("control :"+control);	
+				hilito=new Hilo(conectar.ConsultarNombre(i));
+				hilito.run();
+				int c=0;
+				
 				while(control){
+					c++;
+					 System.out.println("c="+c);
+					 System.out.println("control: "+control);
 					 try {
 					   	  char_dat=(char)in.read();
-					   	  txt.append(char_dat);
-					   
+					   	  txt.append(char_dat);				        
 							}
 					 catch (IOException e) {
 								e.printStackTrace();
-							}
+								}
 					      
 					 if((char_dat=='\n')){
 						 dato=txt.toString();
-					     System.out.println("Recibido:'"+dato+"'");
-					  //   ProcesarMensaje();
-					     
 					     ProcesoCorto();
 					     txt.delete(0, txt.length());
-					      break;
-					 //    control=false;
-					  }
-				
-					
+					     System.out.println("A");
+					     control=false;
+					   
+					   }
+					 System.out.println("B");
+						
 				   }
-				
-					// tiempo de espera entre mediciones
-				try {sleep(tiempoPooling*1000);
+				control=true;
+				System.out.println("C");
+				try {
+					System.out.println("Inicio delay de "+tiempoPooling+" seg");
+					sleep(tiempoPooling*1000);
+					System.out.println("finalizacion delay de "+tiempoPooling+" seg");
 					}
 				catch (InterruptedException e1) {
 					e1.printStackTrace();
 			 		} 
 			  }//for
+			 System.out.println("D");
 		}//while
 	}
 
@@ -197,12 +206,10 @@ public class Serial extends Thread {
 		Calendar calendario = Calendar.getInstance();
 		int hora = 0, minutos = 0, segundos = 0,dia = 0,mes = 0,ano = 0;
 		float t_f = 0,h_f = 0;
-		System.out.println("Procesando el dato:"+dato);
-	
-	
+		System.out.println("Procesando el dato recibido");	
 		try{	
 			parts = dato.split(";");// separa por espacio debe ser ;
-			System.out.println("numero de partes:"+parts);
+			System.out.println("numero de partes:"+parts.length);
 			if(parts.length==numParts){// comprueba numero de datos separados
 				String[] parteUno ;
 				parteUno = parts[0].split("\r");// separa por espacio debe ser ;

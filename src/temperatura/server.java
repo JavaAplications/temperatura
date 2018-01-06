@@ -5,7 +5,7 @@ import Hilos.Serial;
 public class server {
 	
 	static Serial com;
-    static int pooling=15;
+    static int pooling=5;
     static String sistemaOP;
   
     public static void main(String[] args) {
